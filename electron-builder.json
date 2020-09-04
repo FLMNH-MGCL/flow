@@ -1,0 +1,20 @@
+{
+  "appId": "flow",
+  "productName": "flow",
+  "compression": "store",
+  "mac": {
+    "identity": null
+  },
+  "linux": {
+    "target": "AppImage"
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "aaronleopold",
+      "repo": "none",
+      "releaseType": "release"
+    }
+  ],
+  "files": ["src/main/flmnh.png"]
+}
