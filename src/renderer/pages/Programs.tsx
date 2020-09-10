@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import Header from "../components/Header";
-import ProgramSearch from "../components/ProgramSearch";
+// import ProgramSearch from "../components/ProgramSearch";
 import { observer } from "mobx-react-lite";
 import { useMst } from "../models";
 import { useNavigate } from "react-router-dom";
@@ -147,7 +147,7 @@ export default observer(() => {
       />
       {store.programs.items.length > 0 ? (
         <React.Fragment>
-          <ProgramSearch />
+          {/* <ProgramSearch /> */}
           <DragDropContext
             onDragEnd={(result) => {
               if (result.destination) {

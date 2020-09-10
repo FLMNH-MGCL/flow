@@ -9,6 +9,11 @@ export enum ArgumentType {
   FLAG = "FLAG",
 }
 
+// File, Dir and Var configs are essentially identical for now.
+// it does not really make sense to separate them in their current
+// state, but they are separate so that if they need to change independently
+// the models are already there and separate
+
 export const FileArgumentConfig = types
   .model({
     type: types.optional(types.literal(ArgumentType.FLAG), ArgumentType.FLAG),

@@ -6,20 +6,18 @@ import clsx from "clsx";
 
 // TODO: add key escape
 
-type ItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+type ItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
 };
 
-// TODO: convert to ButtonOrLink component
 export function DropdownItem({ children, ...props }: ItemProps) {
   return (
-    <a
-      // href="#"
-      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+    <button
+      className="block px-4 py-2 w-full text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
       {...props}
     >
       {children}
-    </a>
+    </button>
   );
 }
 

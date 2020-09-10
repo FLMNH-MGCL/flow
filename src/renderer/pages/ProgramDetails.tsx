@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import { observer } from "mobx-react-lite";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFilePicker } from "react-sage";
 import { useMst } from "../models";
-// import Dropdown from "../components/ui/Dropdown";
-// import { languages } from "../constants/languages";
-// import { ArgumentType } from "../models/Argument";
 import FileConfiguration from "../components/program/FileConfiguration";
-// import ArgumentConfig from "../components/argument/ArgumentConfig";
 import Argument from "../components/argument/Argument";
 import RunConfiguration from "../components/program/RunConfiguration";
 import { languages } from "../constants/languages";
@@ -129,8 +125,11 @@ export default observer(() => {
 
         {program.arguments && program.arguments.length > 0 && (
           <div className="flex flex-col space-y-6">
-            {program.arguments.map((argument) => (
-              <div className="bg-gray-100 p-2 rounded-md">
+            {program.arguments.map((argument, index) => (
+              <div
+                className="bg-gray-100 p-2 rounded-md"
+                key={`${argument.name}-${index}`}
+              >
                 <div className="py-2 mx-2 flex flex-col space-y-4">
                   <Argument argument={argument} key={argument.name} />
                 </div>

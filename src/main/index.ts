@@ -17,11 +17,11 @@ ipcMain.on("notify", () => {
 });
 
 // pass in path to file, file type, args for spawn, etc
-ipcMain.on("execute_program", (event, args: any) => {
+ipcMain.on("execute_program", (_, args: any) => {
   console.log(args);
   const { command } = args;
 
-  console.log(command);
+  // console.log(command);
 
   if (!command) {
   } else {
@@ -30,23 +30,18 @@ ipcMain.on("execute_program", (event, args: any) => {
     const location = commandArray[1];
     const options = commandArray.length > 2 ? commandArray[2] : null;
 
-    // spawn process
-    let child = spawn.spawn(prefix, [location, options], { detached: true });
+    let child = spawn.spawn(prefix, [location, options]);
 
     child.stdout.setEncoding("utf8");
 
     child.stdout.on("data", (data) => {
-      console.log(data);
       mb?.window?.webContents.send("execution_stdout", data.toString());
     });
 
-    child.on("exit", () => {
+    child.once("exit", () => {
+      console.log("exit signal recieved");
       mb?.window?.webContents.send("execution_end", "Process completed");
     });
-
-    // child.on("close", () => {
-    //   mb?.window?.webContents.send("execution_end", "Process completed");
-    // });
   }
 });
 

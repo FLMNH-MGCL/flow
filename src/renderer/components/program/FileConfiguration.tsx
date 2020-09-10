@@ -23,9 +23,11 @@ export default observer(({ program }: Props) => {
   }, [files]);
 
   function onLanguageSelect(value: string) {
-    program.changeLanguage(value);
-    program.changeLocation("");
-    // program.generateRunConfig();
+    if (value !== program.language) {
+      program.reset();
+      program.changeLanguage(value);
+      program.changeLocation("");
+    }
   }
 
   // TODO:

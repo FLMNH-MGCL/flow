@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams } from "react-router-dom";
 import { useMst } from "../models";
-import { ipcRenderer, ipcMain } from "electron";
+import { ipcRenderer } from "electron";
 import Header from "../components/Header";
 
 export default observer(() => {
@@ -11,30 +11,30 @@ export default observer(() => {
 
   const [executing, setExecuting] = useState(true);
   const [eData, setEData] = useState<string[]>([]);
+
+  const eDataRef = useRef(eData);
+
   const [init, setInit] = useState(true);
 
   const program = store.programs.items[parseInt(params.id, 10)];
-
-  ipcRenderer.on("execution_stdout", (event, data: string) => {
-    // console.log(data);
-    setEData([...eData, data]);
-  });
-
-  ipcRenderer.on("execution_end", (event, data: string) => {
-    console.log("end called");
-    setExecuting(false);
-  });
 
   async function execute() {
     console.log("called execute");
     setInit(false);
 
-    // execute
     await ipcRenderer.send("execute_program", {
       command: program.runConfig?.command,
     });
   }
 
+  // this will update the reference to the state so that the
+  // useEffect hook handling the ipcRenderer listeners doesn't
+  // get affected by closures
+  useEffect(() => {
+    eDataRef.current = eData;
+  });
+
+  // controlled start of execution
   useEffect(() => {
     if (init) {
       setTimeout(() => {
@@ -43,12 +43,35 @@ export default observer(() => {
     }
   });
 
+  // I moved the listeners into an effect, I realized that each update of state recreated the listeners,
+  // and so when the child process sent and exit signal it would then start processing the MASSIVE
+  // stack of state updates. E.g. A rust program generated over 220,000 individual state updates once
+  // the 'execution_end' listener hit lol
+  useEffect(() => {
+    if (executing && eData.length === 0) {
+      console.log("CREATING LISTENERS (should only hit once)");
+      ipcRenderer.on("execution_stdout", (_, data: string) => {
+        setEData([...eDataRef.current, data]);
+      });
+
+      ipcRenderer.once("execution_end", (_, data: string) => {
+        console.log(data);
+        setExecuting(false);
+      });
+    }
+
+    return () => {
+      ipcRenderer.removeAllListeners("execution_stdout");
+      ipcRenderer.removeAllListeners("execution_end");
+    };
+  }, [executing]);
+
   return (
-    <div>
+    <React.Suspense fallback={"...loading"}>
       <Header title={`${program.name} Execution`} />
 
       <div className=" mx-6 pt-6">
-        <h3 className="text-xl font-bold text-gray-900 flex-1 pb-2">
+        <h3 className="text-xl font-bold text-gray-900 flex-1 pb-3">
           Command {executing ? "Running" : "Ran"}
         </h3>
         <pre className="w-full bg-gray-100 p-2 pb-4 rounded-md text-gray-800 text-sm overflow-x-scroll">
@@ -71,16 +94,20 @@ export default observer(() => {
         )}
       </div>
 
-      <div className="p-6">
+      <div className="p-6 pt-0">
         <div className="bg-gray-100 p-2 rounded-md">
           <pre className="py-2 mx-2 text-sm overflow-x-scroll">
             {eData.length > 0 &&
               eData.map((data) => {
-                return <p className="block">{data}</p>;
+                return (
+                  <p className="block" key={data}>
+                    {data}
+                  </p>
+                );
               })}
           </pre>
         </div>
       </div>
-    </div>
+    </React.Suspense>
   );
 });

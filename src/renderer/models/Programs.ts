@@ -65,6 +65,14 @@ export const Program = types
     deleteArgument(argument: any) {
       destroy(argument);
     },
+    reset() {
+      self.language = "";
+      self.fileLocation = "";
+
+      // TODO: find out - does this actually destroy??
+      self.arguments.clear();
+      self.runConfig = null;
+    },
   }));
 
 export const Programs = types
