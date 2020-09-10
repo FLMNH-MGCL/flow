@@ -2,7 +2,9 @@ import { types, destroy, detach } from "mobx-state-tree";
 import { Argument, ArgumentType } from "./Argument";
 
 const defaultRunCommands: Record<string, string> = {
-  Python: "python3",
+  Python: "python3 -u ",
+  Cargo: "cargo run --release --manifest-path ",
+  RustBinary: "",
 };
 
 export const RunConfig = types
@@ -51,7 +53,7 @@ export const Program = types
       );
     },
     generateRunConfig() {
-      if (self.language && defaultRunCommands[self.language]) {
+      if (self.language && defaultRunCommands[self.language] !== undefined) {
         const defaultCommand = defaultRunCommands[self.language];
         self.runConfig = RunConfig.create({
           commandPrefix: defaultCommand,

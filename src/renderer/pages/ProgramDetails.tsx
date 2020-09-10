@@ -4,13 +4,15 @@ import { observer } from "mobx-react-lite";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFilePicker } from "react-sage";
 import { useMst } from "../models";
-import Dropdown from "../components/ui/Dropdown";
-import { languages } from "../constants/languages";
-import { ArgumentType } from "../models/Argument";
+// import Dropdown from "../components/ui/Dropdown";
+// import { languages } from "../constants/languages";
+// import { ArgumentType } from "../models/Argument";
 import FileConfiguration from "../components/program/FileConfiguration";
-import ArgumentConfig from "../components/argument/ArgumentConfig";
+// import ArgumentConfig from "../components/argument/ArgumentConfig";
 import Argument from "../components/argument/Argument";
 import RunConfiguration from "../components/program/RunConfiguration";
+import { languages } from "../constants/languages";
+import { ArgumentType } from "../models/Argument";
 
 // TODO: separate parts into their own components
 
@@ -19,7 +21,7 @@ export default observer(() => {
   const navigate = useNavigate();
   const store = useMst();
 
-  const { files, onClick, HiddenFileInput } = useFilePicker({
+  const { files } = useFilePicker({
     maxFileSize: 1,
   });
 
@@ -31,18 +33,48 @@ export default observer(() => {
     }
   }, [files]);
 
+  function generateFullCommand() {
+    const { runConfig } = program;
+    if (!runConfig) return "";
+
+    const suffix = program.language
+      ? languages[program.language].suffix
+        ? languages[program.language].suffix
+        : " "
+      : " ";
+
+    let fullCommand = `${runConfig.commandPrefix}${
+      program.fileLocation ? program.fileLocation : "MISSING LOCATION"
+    }${suffix}`;
+
+    runConfig.arguments.forEach((argName) => {
+      const rawArg = program.arguments.find((arg) => arg.name === argName);
+
+      if (!rawArg) {
+      }
+
+      if (rawArg?.type === ArgumentType.FLAG) {
+        fullCommand += rawArg.config.flag;
+      }
+    });
+
+    program.runConfig?.changeCommand(fullCommand);
+
+    return fullCommand;
+  }
+
   console.log(files);
 
-  function onLanguageSelect(value: string) {
-    program.changeLanguage(value);
-    program.changeLocation("");
-  }
+  // function onLanguageSelect(value: string) {
+  //   program.changeLanguage(value);
+  //   program.changeLocation("");
+  // }
 
-  function onArgumentTypeSelect(value: string) {
-    program.arguments[0].changeType(
-      ArgumentType[value as keyof typeof ArgumentType]
-    );
-  }
+  // function onArgumentTypeSelect(value: string) {
+  //   program.arguments[0].changeType(
+  //     ArgumentType[value as keyof typeof ArgumentType]
+  //   );
+  // }
 
   return (
     <React.Fragment>
@@ -114,8 +146,30 @@ export default observer(() => {
             </div>
           ))}
 
-        <h3 className="text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+        <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
           Run Configuration
+          <span className="absolute right-0 mr-6">
+            <button
+              className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
+              disabled={!program.fileLocation}
+              onClick={generateFullCommand}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </button>
+          </span>
         </h3>
 
         <RunConfiguration program={program} />

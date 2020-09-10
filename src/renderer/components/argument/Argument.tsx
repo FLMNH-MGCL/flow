@@ -37,9 +37,9 @@ export default observer(({ argument }: Props) => {
             className="mt-1"
             placeholder="Types"
             options={[
-              { text: "FILE_IN", value: ArgumentType.FILE_IN },
-              { text: "FILE_OUT", value: ArgumentType.FILE_OUT },
-              { text: "JSON", value: ArgumentType.JSON },
+              { text: "FILE", value: ArgumentType.FILE },
+              { text: "DIR", value: ArgumentType.DIR },
+              { text: "VAR", value: ArgumentType.VAR },
               { text: "FLAG", value: ArgumentType.FLAG },
             ]}
             selected={argument.type}

@@ -20,6 +20,11 @@ export default observer(() => {
     setEData([...eData, data]);
   });
 
+  ipcRenderer.on("execution_end", (event, data: string) => {
+    console.log("end called");
+    setExecuting(false);
+  });
+
   async function execute() {
     console.log("called execute");
     setInit(false);
@@ -28,8 +33,6 @@ export default observer(() => {
     await ipcRenderer.send("execute_program", {
       command: program.runConfig?.command,
     });
-
-    setExecuting(false);
   }
 
   useEffect(() => {
@@ -39,8 +42,6 @@ export default observer(() => {
       }, 1000);
     }
   });
-
-  console.log(executing);
 
   return (
     <div>
@@ -72,12 +73,12 @@ export default observer(() => {
 
       <div className="p-6">
         <div className="bg-gray-100 p-2 rounded-md">
-          <div className="py-2 mx-2">
+          <pre className="py-2 mx-2 text-sm overflow-x-scroll">
             {eData.length > 0 &&
               eData.map((data) => {
-                return <p>{data}</p>;
+                return <p className="block">{data}</p>;
               })}
-          </div>
+          </pre>
         </div>
       </div>
     </div>

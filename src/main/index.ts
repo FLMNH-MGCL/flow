@@ -31,18 +31,22 @@ ipcMain.on("execute_program", (event, args: any) => {
     const options = commandArray.length > 2 ? commandArray[2] : null;
 
     // spawn process
-    let child = spawn.spawn(prefix, [location, options]);
+    let child = spawn.spawn(prefix, [location, options], { detached: true });
 
     child.stdout.setEncoding("utf8");
 
     child.stdout.on("data", (data) => {
+      console.log(data);
       mb?.window?.webContents.send("execution_stdout", data.toString());
     });
 
-    // collect stdout and send client each line as they appear
-    // if (mb) {
-    //   mb.window?.webContents.send("execution_stdout", "testing 123");
-    // }
+    child.on("exit", () => {
+      mb?.window?.webContents.send("execution_end", "Process completed");
+    });
+
+    // child.on("close", () => {
+    //   mb?.window?.webContents.send("execution_end", "Process completed");
+    // });
   }
 });
 

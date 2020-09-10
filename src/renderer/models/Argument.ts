@@ -1,13 +1,70 @@
 import { types, getParent } from "mobx-state-tree";
-import { Programs, Program } from "./Programs";
+import { Program } from "./Programs";
 
 export enum ArgumentType {
   EMPTY = "EMPTY",
-  FILE_IN = "FILE_IN",
-  FILE_OUT = "FILE_OUT",
-  JSON = "JSON",
+  FILE = "FILE",
+  DIR = "DIR",
+  VAR = "VAR",
   FLAG = "FLAG",
 }
+
+export const FileArgumentConfig = types
+  .model({
+    type: types.optional(types.literal(ArgumentType.FLAG), ArgumentType.FLAG),
+    flag: types.optional(types.string, ""),
+    value: types.optional(types.string, ""),
+    description: types.optional(types.string, ""),
+  })
+  .actions((self) => ({
+    changeFlag(value: string) {
+      self.flag = value;
+    },
+    changeValue(value: string) {
+      self.value = value;
+    },
+    changeDescription(value: string) {
+      self.description = value;
+    },
+  }));
+
+export const DirArgumentConfig = types
+  .model({
+    type: types.optional(types.literal(ArgumentType.DIR), ArgumentType.DIR),
+    flag: types.optional(types.string, ""),
+    value: types.optional(types.string, ""),
+    description: types.optional(types.string, ""),
+  })
+  .actions((self) => ({
+    changeFlag(value: string) {
+      self.flag = value;
+    },
+    changeValue(value: string) {
+      self.value = value;
+    },
+    changeDescription(value: string) {
+      self.description = value;
+    },
+  }));
+
+export const VarArgumentConfig = types
+  .model({
+    type: types.optional(types.literal(ArgumentType.DIR), ArgumentType.DIR),
+    flag: types.optional(types.string, ""),
+    value: types.optional(types.string, ""),
+    description: types.optional(types.string, ""),
+  })
+  .actions((self) => ({
+    changeFlag(value: string) {
+      self.flag = value;
+    },
+    changeValue(value: string) {
+      self.value = value;
+    },
+    changeDescription(value: string) {
+      self.description = value;
+    },
+  }));
 
 export const FlagArgumentConfig = types
   .model({
@@ -19,12 +76,15 @@ export const FlagArgumentConfig = types
     changeFlag(value: string) {
       self.flag = value;
     },
-    setDescription(value: string) {
+    changeDescription(value: string) {
       self.description = value;
     },
   }));
 
 const ConfigTypes = {
+  [ArgumentType.FILE]: FileArgumentConfig,
+  [ArgumentType.DIR]: DirArgumentConfig,
+  [ArgumentType.VAR]: VarArgumentConfig,
   [ArgumentType.FLAG]: FlagArgumentConfig,
 };
 
