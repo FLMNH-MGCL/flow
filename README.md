@@ -24,7 +24,7 @@ python3 -u /path/to/dm_reader.py --arg1 arg1_value
 
 Upon execution, flow would recieve output as it is displayed from the child process (i.e. the program you are now executing) and display it to you live.
 
-Here's the demo of the example above:
+Here's a demo of simple python program that loops 3 times, and sleeps in between iterations:
 <br/>
 
 ![flow demo](docs/demo.gif)
