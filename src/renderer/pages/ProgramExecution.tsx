@@ -5,8 +5,8 @@ import { useMst } from "../models";
 import { ipcRenderer } from "electron";
 import Header from "../components/Header";
 import clsx from "clsx";
-import { Argument } from "../models/Argument";
-import { Instance } from "mobx-state-tree";
+import { defaultArguments } from "../models/Programs";
+// import { AutoSizer, List } from "react-virtualized";
 
 export default observer(() => {
   const params = useParams();
@@ -22,11 +22,11 @@ export default observer(() => {
   const program = store.programs.items[parseInt(params.id, 10)];
 
   async function execute() {
-    if (!program.runConfig) return;
+    if (!program.runConfig || !program.language) return;
     console.log("called execute");
     setInit(false);
 
-    const args = program.runConfig.arguments.map((argString) => {
+    let args = program.runConfig.arguments.map((argString) => {
       const arg = program.arguments.find((arg) => arg.name === argString);
 
       if (arg?.config.type === "FLAG") {
@@ -36,18 +36,18 @@ export default observer(() => {
       }
     });
 
-    // console.log(args);
+    let defaultArg = defaultArguments[program.language];
 
-    // const prefix = `${program.runConfig.commandPrefix}${program.fileLocation}`;
-
-    // console.log(prefix, args);
-
-    // console.log(program.runConfig.arguments);
+    // .filter((arg) => arg.type === "DEFAULT_FLAG")
+    // .map((arg) => {
+    //   return `${arg.config.flag}`;
+    // });
 
     await ipcRenderer.send("execute_program", {
       prefix: program.runConfig.commandPrefix,
       location: program.fileLocation,
       args,
+      defaultArg,
     });
   }
 
@@ -89,6 +89,18 @@ export default observer(() => {
       ipcRenderer.removeAllListeners("execution_end");
     };
   }, [executing]);
+
+  // function rowRenderer({
+  //   key, // Unique key within array of rows
+  //   index, // Index of row within collection
+  //   isScrolling, // The List is currently being scrolled
+  // }: any) {
+  //   return (
+  //     <div key={key} className="block">
+  //       {eData[index]}
+  //     </div>
+  //   );
+  // }
 
   return (
     <React.Suspense fallback={"...loading"}>
@@ -142,15 +154,31 @@ export default observer(() => {
 
       <div className="p-6 pt-0">
         <div className="bg-gray-100 p-2 rounded-md">
-          <pre className="py-2 mx-2 text-sm overflow-x-scroll">
+          <pre className="py-2 mx-2 text-sm overflow-scroll">
             {eData.length > 0 &&
-              eData.map((data) => {
+              eData.map((data, index) => {
                 return (
-                  <p className="block" key={data}>
+                  <p className="block" key={`${data}-${index}`}>
                     {data}
                   </p>
                 );
               })}
+
+            {/* TODO: implement me */}
+            {/* <AutoSizer>
+              {({ height, width }) => {
+                console.log(height, width);
+                return (
+                  <List
+                    width={420}
+                    height={420}
+                    rowCount={eData.length}
+                    rowHeight={20}
+                    rowRenderer={rowRenderer}
+                  />
+                );
+              }}
+            </AutoSizer> */}
           </pre>
         </div>
       </div>

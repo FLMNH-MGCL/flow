@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
-import { Program } from "../../models/Programs";
+import { defaultArguments, Program } from "../../models/Programs";
 import Toggle from "../ui/Toggle";
 import { ArgumentType } from "../../models/Argument";
 import { languages } from "../../constants/languages";
@@ -15,17 +15,26 @@ export default observer(
 
     // TODO: make me not ugly and gross
     function generateFullCommand() {
-      if (!runConfig) return "";
+      if (!runConfig || !program.language) return "";
 
       const suffix = program.language
         ? languages[program.language].suffix
           ? languages[program.language].suffix
-          : " "
-        : " ";
+          : ""
+        : "";
 
-      let fullCommand = `${runConfig.commandPrefix}${
-        program.fileLocation ? program.fileLocation : "MISSING LOCATION"
-      }${suffix}`;
+      const prefix =
+        runConfig.commandPrefix !== "" ? `${runConfig.commandPrefix}` : "";
+
+      const defaultArg = defaultArguments[program.language];
+
+      let fullCommand = "";
+
+      if (defaultArg) {
+        fullCommand = `${prefix} ${defaultArg} ${program.fileLocation}${suffix} `;
+      } else {
+        fullCommand = `${prefix} ${program.fileLocation}${suffix} `;
+      }
 
       runConfig.arguments.forEach((argName, index) => {
         const rawArg = program.arguments.find((arg) => arg.name === argName);
@@ -42,6 +51,8 @@ export default observer(
           }
         }
       });
+
+      fullCommand = fullCommand.trim();
 
       program.runConfig?.changeCommand(fullCommand);
 
@@ -92,9 +103,11 @@ export default observer(
             {program.arguments.map((argument, index) => {
               const enabled = runConfig.arguments.includes(argument.name);
               return (
-                <div className="flex items-center mr-4 pb-3">
+                <div
+                  className="flex items-center mr-4 pb-3"
+                  key={`${index}-${argument.name}`}
+                >
                   <Toggle
-                    key={`${index}-${argument.name}`}
                     title={argument.name}
                     enabled={enabled}
                     onToggle={() => {

@@ -1,12 +1,13 @@
 type LanguageDetails = {
   extension: string;
   prefix?: string;
+  defaultArgs?: string[];
   suffix?: string;
   tip?: string;
 };
 
 export const languages: Record<string, LanguageDetails> = {
-  Python: { extension: ".py", prefix: "python3 -u" },
+  Python: { extension: ".py", prefix: "python3", defaultArgs: ["-u"] },
   RustBinary: {
     extension: "",
     tip:

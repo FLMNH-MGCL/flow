@@ -19,7 +19,6 @@ import {
 
 // TODO: separate parts into their own components
 
-// FIXME ADD CORRECT TYPING
 type DroppableProps = {
   args: Instance<typeof Argument>[];
 };
@@ -186,6 +185,7 @@ export default observer(() => {
             >
               <Droppable droppableId="actions">
                 {(provided) => (
+                  // @ts-ignore - idky this isn't typing correctly
                   <DroppableList provided={provided} args={program.arguments} />
                 )}
               </Droppable>

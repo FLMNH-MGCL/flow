@@ -1,10 +1,13 @@
 import { types, destroy, detach } from "mobx-state-tree";
 import { Argument, ArgumentType } from "./Argument";
 
-const defaultRunCommands: Record<string, string> = {
-  Python: "python3 -u ",
-  Cargo: "cargo run --release --manifest-path ",
+export const defaultRunCommands: Record<string, string> = {
+  Python: "python3",
   RustBinary: "",
+};
+
+export const defaultArguments: Record<string, string> = {
+  Python: "-u",
 };
 
 // TODO: fix me, these args cannot be strings like this
@@ -44,6 +47,17 @@ export const Program = types
     },
     changeLanguage(value: string) {
       self.language = value;
+
+      // const defaultArg = defaultArguments[value];
+      // if (
+      //   defaultArg &&
+      //   !self.arguments.find((arg) => arg.config.flag === defaultArg)
+      // ) {
+      //   // push default argument
+      //   self.arguments.push(Argument.create({
+      //     type:
+      //   }))
+      // }
     },
     changeLocation(value: string) {
       self.fileLocation = value;

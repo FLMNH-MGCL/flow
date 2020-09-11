@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 .app-header {
-	height: 64px;
+  height: 64px;
 }
 
 .header-offset {
-	top: 64px;
+  top: 64px;
+}
+
+.min-h-half {
+  height: 50vh;
+  min-height: 50vh;
 }

@@ -12,22 +12,28 @@ import {
 } from "react-beautiful-dnd";
 import { Instance } from "mobx-state-tree";
 import { Programs } from "../models/Programs";
+import clsx from "clsx";
 
 type ProgramProps = {
   id: string;
   name: string;
   description?: string;
   onDelete(): void;
+
+  bg: string;
 };
 
-function ProgramItem({ id, name, description, onDelete }: ProgramProps) {
+function ProgramItem({ id, name, description, onDelete, bg }: ProgramProps) {
   const navigate = useNavigate();
   return (
     <li
       onClick={() => {
         navigate(id);
       }}
-      className="p-6 flex hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+      className={clsx(
+        "p-6 flex hover:bg-gray-100 transition-colors duration-150 cursor-pointer border-b border-gray-200",
+        bg
+      )}
     >
       <div className="flex-1">
         <div className="font-bold text-gray-900">{name}</div>
@@ -85,7 +91,7 @@ const DroppableList = observer(
   }: { provided: DroppableProvided } & DroppableProps) => (
     <div className="divide-y overflow-y-scroll">
       <ul
-        className="divide-y divide-gray-200"
+        // className="divide-y divide-gray-200"
         {...provided.droppableProps}
         ref={provided.innerRef}
       >
@@ -102,6 +108,11 @@ const DroppableList = observer(
                     key={index}
                     id={String(index)}
                     name={program.name}
+                    bg={
+                      index !== 0 && (index + 1) % 2 === 0
+                        ? "bg-gray-50"
+                        : "bg-white"
+                    }
                     onDelete={() => programs.deleteProgram(program)}
                   />
                 </div>
