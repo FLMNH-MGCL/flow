@@ -8,11 +8,12 @@ flow is just a concept for now and won't be in use for quite some time, but the 
 
 For example, let's take the <a href="https://github.com/FLMNH-MGCL/datamatrix-reader">datamatrix</a> software written for FLMNH. I would boot up flow, 'create' a new program, enter in the path to the python script, enter in any variables or flags to be passed to the python environment, generate a run config and execute whenever needed. So if my file was called `dm_reader.py`, the run config would look something like this:
 
-```javascript
+```tsx
 runConfig = {
-  commandPrefix: "python3 -u ",
+  commandPrefix: "python3",
   arguments: [{ argType, name, flag, value, description }, { ... }],
-  command: "{commandPrefix} {program_location} {arguments}",
+  defaultArgs: ["-u"],
+  command: "{commandPrefix} {defaults} {program_location} {arguments}",
 };
 ```
 
