@@ -7,6 +7,7 @@ const defaultRunCommands: Record<string, string> = {
   RustBinary: "",
 };
 
+// TODO: fix me, these args cannot be strings like this
 export const RunConfig = types
   .model({
     commandPrefix: types.optional(types.string, ""),
@@ -72,6 +73,11 @@ export const Program = types
       // TODO: find out - does this actually destroy??
       self.arguments.clear();
       self.runConfig = null;
+    },
+    reorderArguments(sourceIndex: number, destIndex: number) {
+      const argument = self.arguments[sourceIndex];
+      detach(argument);
+      self.arguments.splice(destIndex, 0, argument);
     },
   }));
 

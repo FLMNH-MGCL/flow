@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import { useMst } from "../models";
 import { ipcRenderer } from "electron";
 import Header from "../components/Header";
+import clsx from "clsx";
+import { Argument } from "../models/Argument";
+import { Instance } from "mobx-state-tree";
 
 export default observer(() => {
   const params = useParams();
@@ -19,11 +22,32 @@ export default observer(() => {
   const program = store.programs.items[parseInt(params.id, 10)];
 
   async function execute() {
+    if (!program.runConfig) return;
     console.log("called execute");
     setInit(false);
 
+    const args = program.runConfig.arguments.map((argString) => {
+      const arg = program.arguments.find((arg) => arg.name === argString);
+
+      if (arg?.config.type === "FLAG") {
+        return `${arg.config.flag}`;
+      } else {
+        return `${arg?.config.flag} ${arg?.config.value}`;
+      }
+    });
+
+    // console.log(args);
+
+    // const prefix = `${program.runConfig.commandPrefix}${program.fileLocation}`;
+
+    // console.log(prefix, args);
+
+    // console.log(program.runConfig.arguments);
+
     await ipcRenderer.send("execute_program", {
-      command: program.runConfig?.command,
+      prefix: program.runConfig.commandPrefix,
+      location: program.fileLocation,
+      args,
     });
   }
 
@@ -81,8 +105,30 @@ export default observer(() => {
 
       <div className="flex justify-between items-center mx-6 pt-6">
         <h3 className="text-xl font-bold text-gray-900 flex-1 pb-2">
-          Program Stdout
+          Program Output
         </h3>
+
+        <span
+          className={clsx(
+            executing
+              ? "bg-yellow-100 text-yellow-800"
+              : " bg-green-100 text-green-800",
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4"
+          )}
+        >
+          <svg
+            className={clsx(
+              executing ? "text-yello-400" : "text-green-400",
+              "-ml-0.5 mr-1.5 h-2 w-2"
+            )}
+            fill="currentColor"
+            viewBox="0 0 8 8"
+          >
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          {executing ? "executing" : "completed"}
+        </span>
+        {/* 
         {executing ? (
           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-md bg-red-100 text-red-800">
             executing
@@ -91,7 +137,7 @@ export default observer(() => {
           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-md bg-green-100 text-green-800">
             completed
           </span>
-        )}
+        )} */}
       </div>
 
       <div className="p-6 pt-0">

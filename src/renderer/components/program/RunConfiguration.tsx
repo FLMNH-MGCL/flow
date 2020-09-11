@@ -88,24 +88,26 @@ export default observer(
           )}
 
           {/* SELECT ARGS */}
-          <div className="flex flex-row flex-wrap space-x-4">
+          <div className="flex flex-row flex-wrap items-center">
             {program.arguments.map((argument, index) => {
               const enabled = runConfig.arguments.includes(argument.name);
               return (
-                <Toggle
-                  key={`${index}-${argument.name}`}
-                  title={argument.name}
-                  enabled={enabled}
-                  onToggle={() => {
-                    if (enabled) {
-                      runConfig.removeArgument(argument.name);
-                      generateFullCommand();
-                    } else {
-                      runConfig.addArgument(argument.name);
-                      generateFullCommand();
-                    }
-                  }}
-                />
+                <div className="flex items-center mr-4 pb-3">
+                  <Toggle
+                    key={`${index}-${argument.name}`}
+                    title={argument.name}
+                    enabled={enabled}
+                    onToggle={() => {
+                      if (enabled) {
+                        runConfig.removeArgument(argument.name);
+                        generateFullCommand();
+                      } else {
+                        runConfig.addArgument(argument.name);
+                        generateFullCommand();
+                      }
+                    }}
+                  />
+                </div>
               );
             })}
           </div>

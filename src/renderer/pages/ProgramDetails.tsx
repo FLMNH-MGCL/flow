@@ -9,8 +9,55 @@ import Argument from "../components/argument/Argument";
 import RunConfiguration from "../components/program/RunConfiguration";
 import { languages } from "../constants/languages";
 import { ArgumentType } from "../models/Argument";
+import { Instance } from "mobx-state-tree";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DroppableProvided,
+} from "react-beautiful-dnd";
 
 // TODO: separate parts into their own components
+
+// FIXME ADD CORRECT TYPING
+type DroppableProps = {
+  args: Instance<typeof Argument>[];
+};
+
+const DroppableList = observer(
+  ({ provided, args }: { provided: DroppableProvided } & DroppableProps) => (
+    <div
+      className="flex flex-col space-y-6"
+      {...provided.droppableProps}
+      ref={provided.innerRef}
+    >
+      {args.map((argument: Instance<typeof Argument>, index: number) => (
+        <React.Fragment key={index}>
+          <Draggable draggableId={String(index)} index={index}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                <div
+                  className="bg-gray-100 p-2 rounded-md"
+                  key={`${argument.name}-${index}`}
+                >
+                  <div className="py-2 mx-2 flex flex-col space-y-4">
+                    {/* @ts-ignore idk why its getting this type wrong*/}
+                    <Argument argument={argument} key={argument.name} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </Draggable>
+        </React.Fragment>
+      ))}
+      {provided.placeholder}
+    </div>
+  )
+);
 
 export default observer(() => {
   const params = useParams();
@@ -82,6 +129,7 @@ export default observer(() => {
           <button
             onClick={() => navigate("execute")}
             className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-md px-2 py-1 items-center justify-center font-semibold"
+            title="Execute Program"
           >
             <svg
               viewBox="0 0 20 20"
@@ -124,18 +172,25 @@ export default observer(() => {
         </h3>
 
         {program.arguments && program.arguments.length > 0 && (
-          <div className="flex flex-col space-y-6">
-            {program.arguments.map((argument, index) => (
-              <div
-                className="bg-gray-100 p-2 rounded-md"
-                key={`${argument.name}-${index}`}
-              >
-                <div className="py-2 mx-2 flex flex-col space-y-4">
-                  <Argument argument={argument} key={argument.name} />
-                </div>
-              </div>
-            ))}
-          </div>
+          <React.Fragment>
+            {/* <ProgramSearch /> */}
+            <DragDropContext
+              onDragEnd={(result) => {
+                if (result.destination) {
+                  program.reorderArguments(
+                    result.source.index,
+                    result.destination.index
+                  );
+                }
+              }}
+            >
+              <Droppable droppableId="actions">
+                {(provided) => (
+                  <DroppableList provided={provided} args={program.arguments} />
+                )}
+              </Droppable>
+            </DragDropContext>
+          </React.Fragment>
         )}
 
         {!program.arguments ||
