@@ -9,6 +9,11 @@ type Props = {
   argument: Instance<typeof Argument>;
 };
 
+/**
+ * Render a UI for a given argument model
+ *
+ * @param {Argument} argument - the argument to render to UI
+ */
 export default observer(({ argument }: Props) => {
   const [name, setName] = useState(argument.name);
   return (

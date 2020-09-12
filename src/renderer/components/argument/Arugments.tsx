@@ -57,6 +57,12 @@ type ArugmentsProps = {
   program: Instance<typeof Program>;
 };
 
+/**
+ * Renders a list of Argument components of the given program. The arguments will be part of a drag n drop list,
+ * and will be properly reordered according to the user interaction
+ *
+ * @param {Program} program - the program to render the arguments list UI for
+ */
 export default observer(({ program }: ArugmentsProps) => {
   return (
     <React.Fragment>
@@ -84,7 +90,6 @@ export default observer(({ program }: ArugmentsProps) => {
 
       {program.arguments && program.arguments.length > 0 && (
         <React.Fragment>
-          {/* <ProgramSearch /> */}
           <DragDropContext
             onDragEnd={(result) => {
               if (result.destination) {

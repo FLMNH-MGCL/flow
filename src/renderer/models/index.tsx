@@ -6,7 +6,7 @@ import { RootModel } from "./Root";
 const store = new Store();
 
 export const rootStore = RootModel.create({
-  programs: { items: [{ name: "Test Routine" }] },
+  programs: { items: [{ name: "Test Program" }] },
 });
 
 const STORAGE_KEY = "MAKE ME PLZ";
@@ -17,8 +17,7 @@ onSnapshot(rootStore, (snapshot) => {
   console.log("Snapshot persisted to storage.");
 });
 
-export type RootInstance = Instance<typeof RootModel>;
-const RootStoreContext = createContext<null | RootInstance>(null);
+const RootStoreContext = createContext<null | Instance<typeof RootModel>>(null);
 
 export function Provider({ children }: { children: React.ReactNode }) {
   const [loaded, setLoaded] = useState(false);
@@ -26,6 +25,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const data = store.get(STORAGE_KEY);
     if (data) {
+      // TODO: remove log eventually
       console.log("Hydrating store from snapshot", data);
       applySnapshot(rootStore, data);
     }

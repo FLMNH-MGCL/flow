@@ -30,7 +30,8 @@ export default observer(({ program }: Props) => {
     }
   }
 
-  // TODO:
+  // TODO: figure out how to handle directory inputs, useFilePicker does not
+  // currently support it
   const useDirectory = false;
 
   return (

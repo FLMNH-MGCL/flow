@@ -42,11 +42,6 @@ function ProgramItem({ id, name, description, onDelete, bg }: ProgramProps) {
         <div className="text-gray-600">{description}</div>
       </div>
       <div className="flex items-center">
-        {/* {incomplete && (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium leading-5 bg-yellow-100 text-yellow-800 mr-2">
-            Incomplete
-          </span>
-        )} */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -92,11 +87,7 @@ const DroppableList = observer(
     programs,
   }: { provided: DroppableProvided } & DroppableProps) => (
     <div className="divide-y overflow-y-scroll">
-      <ul
-        // className="divide-y divide-gray-200"
-        {...provided.droppableProps}
-        ref={provided.innerRef}
-      >
+      <ul {...provided.droppableProps} ref={provided.innerRef}>
         {programs.items.map((program, index) => (
           <React.Fragment key={index}>
             <Draggable draggableId={String(index)} index={index}>

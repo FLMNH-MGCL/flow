@@ -11,6 +11,11 @@ import {
 } from "../../models/Argument";
 import { useFilePicker } from "react-sage";
 
+/**
+ * The observers below return handle the config UI for the various Argument types.
+ * The default export handles the determining of which Config component to render
+ */
+
 const FileConfig = observer(
   ({ config }: { config: Instance<typeof FileArgumentConfig> }) => {
     const { files, onClick, HiddenFileInput } = useFilePicker({
@@ -64,18 +69,6 @@ const FileConfig = observer(
               </div>
             </div>
           </label>
-
-          {/* <label className="block text-sm font-medium leading-5 text-gray-700">
-          Argument Value
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
-              placeholder="value"
-              value={config.value}
-              onChange={(e) => config.changeValue(e.target.value)}
-            />
-          </div>
-        </label> */}
         </div>
         <HiddenFileInput multiple={false} accept="" />
       </React.Fragment>
@@ -151,7 +144,6 @@ const VarConfig = observer(
 
 const FlagConfig = observer(
   ({ config }: { config: Instance<typeof FlagArgumentConfig> }) => {
-    // console.log(config);
     return (
       <label className="block text-sm font-medium leading-5 text-gray-700">
         Flag Value
@@ -179,10 +171,15 @@ type Props = {
   argument: Instance<typeof Argument>;
 };
 
+/**
+ * Attempts to render a config UI for a given argument model
+ *
+ * @param {Argument} argument - the argument to render the config UI for
+ */
 export default observer(({ argument }: Props) => {
   let ConfigComponent;
   if (argument.type in ArgumentConfig) {
-    // @ts-expect-error
+    // @ts-expect-error - not sure why this errors
     ConfigComponent = ArgumentConfig[argument.type];
   }
 
