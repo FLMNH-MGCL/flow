@@ -19,7 +19,7 @@ ipcMain.on("notify", () => {
 // pass in path to file, file type, args for spawn, etc
 ipcMain.on("execute_program", (_, data: any) => {
   console.log(data);
-  const { prefix, location, args, defaultArg } = data;
+  const { prefix, location, args, defaultArgs } = data;
 
   // console.log(config);
 
@@ -34,7 +34,7 @@ ipcMain.on("execute_program", (_, data: any) => {
 
     let child;
     if (prefix && prefix !== "") {
-      child = spawn.spawn(prefix, [defaultArg, location, ...options]);
+      child = spawn.spawn(prefix, [defaultArgs, location, ...options]);
     } else {
       child = spawn.spawn(location, [...options]);
     }

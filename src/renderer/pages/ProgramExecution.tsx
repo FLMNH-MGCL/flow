@@ -23,31 +23,31 @@ export default observer(() => {
 
   async function execute() {
     if (!program.runConfig || !program.language) return;
-    console.log("called execute");
+
+    const { runConfig } = program;
     setInit(false);
 
-    let args = program.runConfig.arguments.map((argString) => {
-      const arg = program.arguments.find((arg) => arg.name === argString);
+    // let args = program.runConfig.arguments.map((argString) => {
+    //   const arg = program.arguments.find((arg) => arg.name === argString);
 
-      if (arg?.config.type === "FLAG") {
-        return `${arg.config.flag}`;
-      } else {
-        return `${arg?.config.flag} ${arg?.config.value}`;
-      }
-    });
-
-    let defaultArg = defaultArguments[program.language];
-
-    // .filter((arg) => arg.type === "DEFAULT_FLAG")
-    // .map((arg) => {
-    //   return `${arg.config.flag}`;
+    //   if (arg?.config.type === "FLAG") {
+    //     return `${arg.config.flag}`;
+    //   } else {
+    //     return `${arg?.config.flag} ${arg?.config.value}`;
+    //   }
     // });
+
+    let args = runConfig.arguments.map((argName) => {
+      const arg = program.arguments.find((arg) => arg.name === argName)?.config;
+
+      return clsx(arg.flag, arg.value);
+    });
 
     await ipcRenderer.send("execute_program", {
       prefix: program.runConfig.commandPrefix,
+      defaultArgs: defaultArguments[program.language],
       location: program.fileLocation,
       args,
-      defaultArg,
     });
   }
 
@@ -104,7 +104,7 @@ export default observer(() => {
 
   return (
     <React.Suspense fallback={"...loading"}>
-      <Header title={`${program.name} Execution`} />
+      <Header title={`${program.name} Execution`} disableNav={executing} />
 
       <div className=" mx-6 pt-6">
         <h3 className="text-xl font-bold text-gray-900 flex-1 pb-3">

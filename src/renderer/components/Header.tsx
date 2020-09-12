@@ -17,6 +17,7 @@ type Props = {
   action?: React.ReactNode;
   editableTitle?: boolean;
   onEdit?(value: string): void;
+  disableNav?: boolean;
 };
 
 export default function Header({
@@ -24,13 +25,14 @@ export default function Header({
   action,
   editableTitle,
   onEdit,
+  disableNav,
 }: Props) {
   const location = useLocation().pathname;
 
   return (
     <div className="px-4 app-header overflow-hidden grid grid-cols-6 border-b sticky top-0 z-20 bg-white">
       <HeaderItem className="justify-start col-span-1">
-        {location !== "/programs" ? (
+        {location !== "/programs" && !disableNav ? (
           <Link
             to=".."
             className="rounded-full p-2 hover:bg-gray-200 focus:outline-none transition-colors duration-150"

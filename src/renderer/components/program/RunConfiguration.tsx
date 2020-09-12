@@ -30,8 +30,6 @@ export default observer(
         })
       );
 
-      console.log(command);
-
       runConfig.changeCommand(command);
 
       return command;
