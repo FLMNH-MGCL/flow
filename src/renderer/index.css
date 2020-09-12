@@ -9,8 +9,3 @@
 .header-offset {
   top: 64px;
 }
-
-.min-h-half {
-  height: 50vh;
-  min-height: 50vh;
-}

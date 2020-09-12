@@ -5,58 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useFilePicker } from "react-sage";
 import { useMst } from "../models";
 import FileConfiguration from "../components/program/FileConfiguration";
-import Argument from "../components/argument/Argument";
 import RunConfiguration from "../components/program/RunConfiguration";
-import { languages } from "../constants/languages";
-import { ArgumentType } from "../models/Argument";
-import { Instance } from "mobx-state-tree";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DroppableProvided,
-} from "react-beautiful-dnd";
-
-// TODO: separate parts into their own components
-
-type DroppableProps = {
-  args: Instance<typeof Argument>[];
-};
-
-const DroppableList = observer(
-  ({ provided, args }: { provided: DroppableProvided } & DroppableProps) => (
-    <div
-      className="flex flex-col space-y-6"
-      {...provided.droppableProps}
-      ref={provided.innerRef}
-    >
-      {args.map((argument: Instance<typeof Argument>, index: number) => (
-        <React.Fragment key={index}>
-          <Draggable draggableId={String(index)} index={index}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
-                <div
-                  className="bg-gray-100 p-2 rounded-md"
-                  key={`${argument.name}-${index}`}
-                >
-                  <div className="py-2 mx-2 flex flex-col space-y-4">
-                    {/* @ts-ignore idk why its getting this type wrong*/}
-                    <Argument argument={argument} key={argument.name} />
-                  </div>
-                </div>
-              </div>
-            )}
-          </Draggable>
-        </React.Fragment>
-      ))}
-      {provided.placeholder}
-    </div>
-  )
-);
+import Arugments from "../components/argument/Arugments";
 
 export default observer(() => {
   const params = useParams();
@@ -74,49 +24,6 @@ export default observer(() => {
       program.changeLocation(files[0].path);
     }
   }, [files]);
-
-  function generateFullCommand() {
-    const { runConfig } = program;
-    if (!runConfig) return "";
-
-    const suffix = program.language
-      ? languages[program.language].suffix
-        ? languages[program.language].suffix
-        : " "
-      : " ";
-
-    let fullCommand = `${runConfig.commandPrefix}${
-      program.fileLocation ? program.fileLocation : "MISSING LOCATION"
-    }${suffix}`;
-
-    runConfig.arguments.forEach((argName) => {
-      const rawArg = program.arguments.find((arg) => arg.name === argName);
-
-      if (!rawArg) {
-      }
-
-      if (rawArg?.type === ArgumentType.FLAG) {
-        fullCommand += rawArg.config.flag;
-      }
-    });
-
-    program.runConfig?.changeCommand(fullCommand);
-
-    return fullCommand;
-  }
-
-  console.log(files);
-
-  // function onLanguageSelect(value: string) {
-  //   program.changeLanguage(value);
-  //   program.changeLocation("");
-  // }
-
-  // function onArgumentTypeSelect(value: string) {
-  //   program.arguments[0].changeType(
-  //     ArgumentType[value as keyof typeof ArgumentType]
-  //   );
-  // }
 
   return (
     <React.Fragment>
@@ -148,83 +55,7 @@ export default observer(() => {
       <div className="p-6">
         <FileConfiguration program={program} />
 
-        <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
-          Program Arguments
-          <span className="absolute right-0 mr-6">
-            <button
-              className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
-              onClick={program.createArgument}
-            >
-              <svg
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="h-4 w-4"
-              >
-                <path d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-          </span>
-        </h3>
-
-        {program.arguments && program.arguments.length > 0 && (
-          <React.Fragment>
-            {/* <ProgramSearch /> */}
-            <DragDropContext
-              onDragEnd={(result) => {
-                if (result.destination) {
-                  program.reorderArguments(
-                    result.source.index,
-                    result.destination.index
-                  );
-                }
-              }}
-            >
-              <Droppable droppableId="actions">
-                {(provided) => (
-                  // @ts-ignore - idky this isn't typing correctly
-                  <DroppableList provided={provided} args={program.arguments} />
-                )}
-              </Droppable>
-            </DragDropContext>
-          </React.Fragment>
-        )}
-
-        {!program.arguments ||
-          (program.arguments.length < 1 && (
-            <div className="bg-gray-100 p-2 rounded-md">
-              No arguments configured
-            </div>
-          ))}
-
-        <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
-          Run Configuration
-          <span className="absolute right-0 mr-6">
-            <button
-              className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
-              disabled={!program.fileLocation}
-              onClick={generateFullCommand}
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </button>
-          </span>
-        </h3>
+        <Arugments program={program} />
 
         <RunConfiguration program={program} />
       </div>
