@@ -21,15 +21,7 @@ ipcMain.on("execute_program", (_, data: any) => {
   console.log(data);
   const { prefix, location, args, defaultArgs } = data;
 
-  // console.log(config);
-
-  // console.log(command);
-
   if (data) {
-    // const commandArray = command.split(" ");
-    // const prefix = commandArray[0];
-    // const location = commandArray[1];
-    // const options = commandArray.length > 2 ? commandArray[2] : null;
     const options = args;
 
     let child;

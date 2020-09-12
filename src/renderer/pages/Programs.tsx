@@ -13,6 +13,8 @@ import {
 import { Instance } from "mobx-state-tree";
 import { Programs } from "../models/Programs";
 import clsx from "clsx";
+import HeaderPlaceholder from "../components/placeholders/Header";
+import ListItemPlaceholder from "../components/placeholders/ListItem";
 
 type ProgramProps = {
   id: string;
@@ -126,6 +128,19 @@ const DroppableList = observer(
   )
 );
 
+// trying out some fallbacks, not really sure if needed though
+function ProgramsFallback() {
+  return (
+    <React.Fragment>
+      <HeaderPlaceholder />
+      {/* <Base /> */}
+      <ListItemPlaceholder width="24" />
+      <ListItemPlaceholder width="36" />
+      <ListItemPlaceholder width="16" />
+    </React.Fragment>
+  );
+}
+
 export default observer(() => {
   const store = useMst();
 
@@ -134,7 +149,7 @@ export default observer(() => {
   }, [store]);
 
   return (
-    <React.Fragment>
+    <React.Suspense fallback={ProgramsFallback}>
       <Header
         title="Programs"
         action={
@@ -182,6 +197,6 @@ export default observer(() => {
           <h3>Declare a new program to get started</h3>
         </div>
       )}
-    </React.Fragment>
+    </React.Suspense>
   );
 });

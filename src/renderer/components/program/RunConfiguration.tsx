@@ -13,6 +13,13 @@ export default observer(
     const hasPrefix =
       program.language && languages[program.language].prefix !== undefined;
 
+    // comment for my decision to use clsx in my query/command builder:
+    // I decided to transition over to clsx as opposed to template strings
+    // 1. because of the cleaner presentation the logic has now, and 2. because of
+    // how clsx handles undefined/null data. For example, using clsx I can simply
+    // return the combination of arg.flag and arg.value. If the type of argument is a FLAG,
+    // arg.value does not exist. Using template strings, ${arg.value} would put a big, fat
+    // 'undefined' in my query string.
     function generateFullCommand() {
       const { runConfig } = program;
 
