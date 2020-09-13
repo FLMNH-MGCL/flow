@@ -12,6 +12,7 @@ let mb: Menubar;
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
+// ELECTRON -> CLIENT INTERACTIONS
 ipcMain.on("notify", () => {
   mb.tray.setImage(path.resolve(__dirname, "flmnhActive.png"));
 });
@@ -31,6 +32,8 @@ ipcMain.on("execute_program", (_, data: any) => {
       child = spawn.spawn(location, [...options]);
     }
 
+    mb?.window?.webContents.send("child_pid", child.pid);
+
     child.stdout.setEncoding("utf8");
 
     child.stdout.on("data", (data) => {
@@ -41,8 +44,52 @@ ipcMain.on("execute_program", (_, data: any) => {
       console.log("exit signal recieved");
       mb?.window?.webContents.send("execution_end", "Process completed");
     });
+
+    // TODO: implement
+    child.stderr.on("data", (data) => {
+      console.log("stderr: " + data);
+      // mb?.window?.webContents.send("execution_stderr", data.toString());
+    });
+
+    // TODO: figure out which of these next listeners hit when FORCED kill vs self exit
+    // START OF TODO TEST BLOCK
+    child.stdout.on("error", (data) => {
+      console.log("stdout error hit: " + data);
+    });
+
+    // is this redundant?
+    child.stderr.on("error", (data) => {
+      console.log("stderr error hit?: " + data);
+    });
+
+    child.on("error", (data) => {
+      console.log("child error hit: " + data);
+    });
+    // END OF TODO TEST BLOCK
   }
 });
+
+ipcMain.on("kill_process", (_, data: any) => {
+  const { pid } = data;
+
+  try {
+    process.kill(pid);
+
+    mb?.window?.webContents.send("kill_process_response", {
+      killed: true,
+      message: `Process ${pid} terminated`,
+    });
+  } catch (error) {
+    console.log(error);
+
+    // assume pid does not exist until more testing
+    mb?.window?.webContents.send("kill_process_response", {
+      killed: false,
+      message: `Could not kill process ${pid}, unable to detect pid in system`,
+    });
+  }
+});
+// END OF ELECTRON -> CLIENT INTERACTIONS
 
 app.on("ready", () => {
   mb = menubar({
