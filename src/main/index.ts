@@ -42,26 +42,15 @@ ipcMain.on("execute_program", (_, data: any) => {
 
     child.once("exit", () => {
       console.log("exit signal recieved");
+
       mb?.window?.webContents.send("execution_end", "Process completed");
     });
 
-    // TODO: implement
     child.stderr.on("data", (data) => {
-      console.log("stderr: " + data);
-      // mb?.window?.webContents.send("execution_stderr", data.toString());
+      mb?.window?.webContents.send("execution_stderr", data.toString());
     });
 
-    // TODO: figure out which of these next listeners hit when FORCED kill vs self exit
-    // START OF TODO TEST BLOCK
-    child.stdout.on("error", (data) => {
-      console.log("stdout error hit: " + data);
-    });
-
-    // is this redundant?
-    child.stderr.on("error", (data) => {
-      console.log("stderr error hit?: " + data);
-    });
-
+    // TODO: figure out when this would hit
     child.on("error", (data) => {
       console.log("child error hit: " + data);
     });
@@ -69,13 +58,13 @@ ipcMain.on("execute_program", (_, data: any) => {
   }
 });
 
-ipcMain.on("kill_process", (_, data: any) => {
+ipcMain.on("kill_execution", (_, data: any) => {
   const { pid } = data;
 
   try {
     process.kill(pid);
 
-    mb?.window?.webContents.send("kill_process_response", {
+    mb?.window?.webContents.send("kill_execution_response", {
       killed: true,
       message: `Process ${pid} terminated`,
     });
@@ -83,7 +72,7 @@ ipcMain.on("kill_process", (_, data: any) => {
     console.log(error);
 
     // assume pid does not exist until more testing
-    mb?.window?.webContents.send("kill_process_response", {
+    mb?.window?.webContents.send("kill_execution_response", {
       killed: false,
       message: `Could not kill process ${pid}, unable to detect pid in system`,
     });
