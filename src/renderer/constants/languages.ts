@@ -11,6 +11,6 @@ export const languages: Record<string, LanguageDetails> = {
   RustBinary: {
     extension: "",
     tip:
-      "Rust binary files do not have extensions, and do not have any prefix to run them - it's rather simpliar to running a bash script",
+      "Rust binary files do not have extensions, and do not have any prefix to run them - it's rather similiar to running a bash script",
   },
 };
