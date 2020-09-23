@@ -51,6 +51,7 @@
     "electron-updater": "^4.3.4",
     "electron-webpack": "^2.8.2",
     "electron-webpack-ts": "^4.0.1",
+    "node-forge": "^0.10.0",
     "postcss-loader": "^3.0.0",
     "style-loader": "^1.2.1",
     "tailwindcss": "^1.4.6",

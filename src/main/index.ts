@@ -10,6 +10,8 @@ autoUpdater.checkForUpdatesAndNotify();
 
 let mb: Menubar;
 
+let eData: { rawData: string; isError: boolean }[] = [];
+
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
 // ELECTRON -> CLIENT INTERACTIONS
@@ -37,24 +39,29 @@ ipcMain.on("execute_program", (_, data: any) => {
     child.stdout.setEncoding("utf8");
 
     child.stdout.on("data", (data) => {
-      mb?.window?.webContents.send("execution_stdout", data.toString());
+      eData.push({ rawData: data.toString(), isError: false });
+      mb?.window?.webContents.send("execution_stdout", eData);
     });
 
-    child.once("exit", () => {
-      console.log("exit signal recieved");
-
-      mb?.window?.webContents.send("execution_end", "Process completed");
+    child.stdout.once("end", () => {
+      console.log("child stdout ended");
     });
 
     child.stderr.on("data", (data) => {
-      mb?.window?.webContents.send("execution_stderr", data.toString());
+      eData.push({ rawData: data.toString(), isError: true });
+      mb?.window?.webContents.send("execution_stderr", eData);
     });
 
     // TODO: figure out when this would hit
     child.on("error", (data) => {
       console.log("child error hit: " + data);
     });
-    // END OF TODO TEST BLOCK
+
+    child.once("close", () => {
+      console.log("child process closed");
+      eData = [];
+      mb?.window?.webContents.send("execution_end", "Process completed");
+    });
   }
 });
 
@@ -68,6 +75,8 @@ ipcMain.on("kill_execution", (_, data: any) => {
       killed: true,
       message: `Process ${pid} terminated`,
     });
+
+    eData = [];
   } catch (error) {
     console.log(error);
 
@@ -76,6 +85,8 @@ ipcMain.on("kill_execution", (_, data: any) => {
       killed: false,
       message: `Could not kill process ${pid}, unable to detect pid in system`,
     });
+
+    eData = [];
   }
 });
 // END OF ELECTRON -> CLIENT INTERACTIONS

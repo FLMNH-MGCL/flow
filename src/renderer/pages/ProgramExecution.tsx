@@ -23,7 +23,6 @@ export default observer(() => {
   const [pid, setPid] = useState<number>();
   const [eData, setEData] = useState<ExecucutionData[]>([]);
 
-  const eDataRef = useRef(eData);
   const hasErrorRef = useRef(hasError);
   const dataEndRef = React.createRef<HTMLDivElement>();
 
@@ -78,7 +77,6 @@ export default observer(() => {
   // useEffect hook handling the ipcRenderer listeners doesn't
   // get affected by closures
   useEffect(() => {
-    eDataRef.current = eData;
     hasErrorRef.current = hasError;
 
     scrollToBottom();
@@ -97,6 +95,14 @@ export default observer(() => {
   // and so when the child process sent and exit signal it would then start processing the MASSIVE
   // stack of state updates. E.g. A rust program generated over 220,000 individual state updates once
   // the 'execution_end' listener hit lol
+
+  // One current issue this has is that if the execution is too quick, it will not be able to update the state quickly enough.
+  // each listener recieves all the data, but its not always present in the array containing the execution data.
+  // this will require some looking into, I don't feel that local state is viable if it lags this much, since it has to
+  // copy teh entire array and append the new data each time stdout is sent. maybe I can do this on the electron side?
+
+  // UPDATE: I altered this to be handled on the electron server instead of react state, it seems to be working perfectly now. Electron
+  // has a global array that it updates on stdout and sends here.
   useEffect(() => {
     if (executing && eData.length === 0) {
       console.log("CREATING LISTENERS (should only hit once)");
@@ -105,19 +111,18 @@ export default observer(() => {
         setPid(pid);
       });
 
-      ipcRenderer.on("execution_stdout", (_, data: string) => {
-        setEData([...eDataRef.current, { rawData: data, isError: false }]);
+      ipcRenderer.on("execution_stdout", (_, data: ExecucutionData[]) => {
+        setEData(data);
       });
 
-      ipcRenderer.on("execution_stderr", (_, data: string) => {
+      ipcRenderer.on("execution_stderr", (_, data: ExecucutionData[]) => {
         if (!hasErrorRef.current) {
           setHasError(true);
         }
-        setEData([...eDataRef.current, { rawData: data, isError: true }]);
+        setEData(data);
       });
 
-      ipcRenderer.once("execution_end", (_, data: string) => {
-        console.log(data);
+      ipcRenderer.once("execution_end", (_, _data: string) => {
         setExecuting(false);
       });
 
@@ -138,6 +143,8 @@ export default observer(() => {
       ipcRenderer.removeAllListeners("execution_stdout");
       ipcRenderer.removeAllListeners("execution_stderr");
       ipcRenderer.removeAllListeners("execution_end");
+      ipcRenderer.removeAllListeners("kill_execution_response");
+      ipcRenderer.removeAllListeners("child_pid");
     };
   }, [executing]);
 
@@ -152,6 +159,8 @@ export default observer(() => {
   //     </div>
   //   );
   // }
+
+  // console.log(eData);
 
   return (
     <React.Suspense fallback={"...loading"}>
@@ -248,6 +257,15 @@ export default observer(() => {
                   </p>
                 );
               })}
+            {/* 
+            {eData.length > 0 &&
+              eData.map((data, index) => {
+                return (
+                  <p className="block" key={index}>
+                    {data}
+                  </p>
+                );
+              })} */}
 
             {/* TODO: implement me to save on performance*/}
             {/* <AutoSizer>

@@ -10,7 +10,6 @@ export const defaultArguments: Record<string, string> = {
   Python: "-u",
 };
 
-// TODO: fix me, these args cannot be strings like this
 export const RunConfig = types
   .model({
     commandPrefix: types.optional(types.string, ""),
