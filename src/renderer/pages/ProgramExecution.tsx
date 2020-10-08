@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams } from "react-router-dom";
 import { useMst } from "../models";
-import { ipcRenderer } from "electron";
+import { ipcMain, ipcRenderer } from "electron";
 import Header from "../components/Header";
 import clsx from "clsx";
 import { defaultArguments } from "../models/Programs";
+import { ArgumentType } from "../models/Argument";
 // import { AutoSizer, List } from "react-virtualized";
 
 type ExecucutionData = {
@@ -56,12 +57,40 @@ export default observer(() => {
 
     let args: string[] = [];
     runConfig.arguments.forEach((argName) => {
-      const arg = program.arguments.find((arg) => arg.name === argName)?.config;
+      const arg = program.arguments.find((arg) => arg.name === argName);
 
-      args.push(arg.flag);
+      if (arg) {
+        const argConfig = arg.config;
 
-      if (arg.value) {
-        args.push(arg.value);
+        if (arg.type === ArgumentType.ARRAY) {
+          const values = JSON.parse(argConfig.value).values;
+
+          args.push(argConfig.flag);
+
+          values.forEach((value: any) => {
+            if (typeof value !== "string" && typeof value !== "object") {
+              args.push(value.toString());
+            } else if (typeof value === "object") {
+              // TODO: FIXME: I feel like this could be dangerous
+              const stringifiedValue = JSON.stringify(value).replace(
+                /(["'])/g,
+                "\\$1"
+              );
+              args.push(stringifiedValue);
+            } else {
+              args.push(value);
+            }
+          });
+        } else if (arg.type === ArgumentType.JSON) {
+          let updatedValue = argConfig.value.replace(/(["'])/g, "\\$1");
+          args.push(argConfig.flag);
+          args.push(updatedValue);
+        } else {
+          if (argConfig.value) {
+            args.push(argConfig.flag);
+            args.push(argConfig.value);
+          }
+        }
       }
     });
 
@@ -124,6 +153,8 @@ export default observer(() => {
 
       ipcRenderer.once("execution_end", (_, _data: string) => {
         setExecuting(false);
+
+        ipcRenderer.send("notify");
       });
 
       ipcRenderer.once(
@@ -134,7 +165,7 @@ export default observer(() => {
             setExecuting(false);
           }
 
-          console.log(message);
+          // console.log(message);
         }
       );
     }

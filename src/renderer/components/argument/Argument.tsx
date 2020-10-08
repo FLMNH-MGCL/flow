@@ -46,6 +46,8 @@ export default observer(({ argument }: Props) => {
               { text: "DIR", value: ArgumentType.DIR },
               { text: "VAR", value: ArgumentType.VAR },
               { text: "FLAG", value: ArgumentType.FLAG },
+              { text: "ARRAY", value: ArgumentType.ARRAY },
+              { text: "JSON", value: ArgumentType.JSON },
             ]}
             selected={argument.type}
             onSelect={argument.changeType}

@@ -1,2 +1,4 @@
 dist/
 node_modules/
+test_scripts
+.DS_STORE

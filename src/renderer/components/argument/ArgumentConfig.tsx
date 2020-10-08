@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import {
@@ -8,7 +8,10 @@ import {
   FileArgumentConfig,
   DirArgumentConfig,
   VarArgumentConfig,
+  ArrayArgumentConfig,
+  JsonArgumentConfig,
 } from "../../models/Argument";
+import ReactJson from "react-json-view";
 import { useFilePicker } from "react-sage";
 
 /**
@@ -160,11 +163,137 @@ const FlagConfig = observer(
   }
 );
 
+const ArrayConfig = observer(
+  ({ config }: { config: Instance<typeof ArrayArgumentConfig> }) => {
+    const [validationMessage, setValidationMessage] = useState<string>();
+
+    function handleAdd(edit: any) {
+      const {
+        updated_src, //new src value
+        name, //new var name,
+        existing_src,
+      } = edit;
+
+      if (name !== "values") {
+        setValidationMessage("cannot add fields");
+        return false;
+      }
+
+      if (Object.keys(updated_src).length > 1) {
+        config.changeValue(JSON.stringify(existing_src));
+        return false;
+      }
+
+      config.changeValue(JSON.stringify(updated_src));
+
+      return true;
+    }
+
+    function handleEdit(edit: any) {
+      const {
+        updated_src, //new src value
+        // name, //new var name
+        // namespace, //list, namespace indicating var location
+        // new_value, //new variable value
+        // existing_value, //existing variable value
+      } = edit;
+
+      config.changeValue(JSON.stringify(updated_src));
+
+      return true;
+    }
+
+    function handleDelete(edit: any) {
+      const {
+        updated_src,
+        name, //new var name
+      } = edit;
+
+      if (name === "values") {
+        setValidationMessage("you cannot remove 'values'");
+        return false;
+      }
+
+      config.changeValue(JSON.stringify(updated_src));
+
+      return true;
+    }
+
+    return (
+      <div className="flex flex-col space-y-4">
+        <label className="block text-sm font-medium leading-5 text-gray-700">
+          Flag Value
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <input
+              className="form-input block w-full sm:text-sm sm:leading-5"
+              placeholder="--flag"
+              value={config.flag}
+              onChange={(e) => config.changeFlag(e.target.value)}
+            />
+          </div>
+        </label>
+
+        <label className="block text-sm font-medium leading-5 text-gray-700">
+          Argument Values
+        </label>
+
+        <ReactJson
+          name="arrayConfig"
+          src={JSON.parse(config.value)}
+          onEdit={handleEdit}
+          onAdd={handleAdd}
+          onDelete={handleDelete}
+          validationMessage={validationMessage}
+        />
+      </div>
+    );
+  }
+);
+
+const JsonConfig = observer(
+  ({ config }: { config: Instance<typeof JsonArgumentConfig> }) => {
+    function handleChange({ updated_src }: { updated_src: Object }) {
+      config.changeValue(JSON.stringify(updated_src));
+    }
+
+    return (
+      <div className="flex flex-col space-y-4">
+        <label className="block text-sm font-medium leading-5 text-gray-700">
+          Flag Value
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <input
+              className="form-input block w-full sm:text-sm sm:leading-5"
+              placeholder="--flag"
+              value={config.flag}
+              onChange={(e) => config.changeFlag(e.target.value)}
+            />
+          </div>
+        </label>
+
+        <label className="block text-sm font-medium leading-5 text-gray-700">
+          Argument Value
+        </label>
+
+        <ReactJson
+          name="jsonConfig"
+          src={JSON.parse(config.value)}
+          onEdit={handleChange}
+          onAdd={handleChange}
+          onDelete={handleChange}
+          collapsed={false}
+        />
+      </div>
+    );
+  }
+);
+
 const ArgumentConfig = {
   [ArgumentType.FILE]: FileConfig,
   [ArgumentType.DIR]: DirConfig,
   [ArgumentType.VAR]: VarConfig,
   [ArgumentType.FLAG]: FlagConfig,
+  [ArgumentType.ARRAY]: ArrayConfig,
+  [ArgumentType.JSON]: JsonConfig,
 };
 
 type Props = {

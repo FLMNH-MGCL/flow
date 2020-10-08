@@ -3,10 +3,12 @@ import { Program } from "./Programs";
 
 export enum ArgumentType {
   EMPTY = "EMPTY",
+  FLAG = "FLAG",
   FILE = "FILE",
   DIR = "DIR",
   VAR = "VAR",
-  FLAG = "FLAG",
+  ARRAY = "ARRAY",
+  JSON = "JSON",
 }
 
 // File, Dir and Var configs are essentially identical for now.
@@ -86,11 +88,51 @@ export const FlagArgumentConfig = types
     },
   }));
 
+export const ArrayArgumentConfig = types
+  .model({
+    type: types.optional(types.literal(ArgumentType.ARRAY), ArgumentType.ARRAY),
+    flag: types.optional(types.string, ""),
+    value: types.optional(types.string, JSON.stringify({ values: [] })),
+    description: types.optional(types.string, ""),
+  })
+  .actions((self) => ({
+    changeFlag(value: string) {
+      self.flag = value;
+    },
+    changeValue(value: string) {
+      self.value = value;
+    },
+    changeDescription(value: string) {
+      self.description = value;
+    },
+  }));
+
+export const JsonArgumentConfig = types
+  .model({
+    type: types.optional(types.literal(ArgumentType.JSON), ArgumentType.JSON),
+    flag: types.optional(types.string, ""),
+    value: types.optional(types.string, "{}"),
+    description: types.optional(types.string, ""),
+  })
+  .actions((self) => ({
+    changeFlag(value: string) {
+      self.flag = value;
+    },
+    changeValue(value: string) {
+      self.value = value;
+    },
+    changeDescription(value: string) {
+      self.description = value;
+    },
+  }));
+
 const ConfigTypes = {
   [ArgumentType.FILE]: FileArgumentConfig,
   [ArgumentType.DIR]: DirArgumentConfig,
   [ArgumentType.VAR]: VarArgumentConfig,
   [ArgumentType.FLAG]: FlagArgumentConfig,
+  [ArgumentType.ARRAY]: ArrayArgumentConfig,
+  [ArgumentType.JSON]: JsonArgumentConfig,
 };
 
 export const Argument = types
@@ -121,25 +163,3 @@ export const Argument = types
       self.name = value;
     },
   }));
-
-// export const Programs = types
-//   .model({
-//     items: types.optional(types.array(Program), []),
-//   })
-//   .actions((self) => ({
-//     createProgram() {
-//       self.items.push(
-//         Program.create({
-//           name: "New Program",
-//         })
-//       );
-//     },
-//     deleteProgram(program: any) {
-//       destroy(program);
-//     },
-//     reorderPrograms(sourceIndex: number, destIndex: number) {
-//       const program = self.items[sourceIndex];
-//       detach(program);
-//       self.items.splice(destIndex, 0, program);
-//     },
-//   }));

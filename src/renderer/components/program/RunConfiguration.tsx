@@ -5,6 +5,7 @@ import { defaultArguments, Program } from "../../models/Programs";
 import Toggle from "../ui/Toggle";
 import { languages } from "../../constants/languages";
 import clsx from "clsx";
+import { ArgumentType } from "../../models/Argument";
 
 export default observer(
   ({ program }: { program: Instance<typeof Program> }) => {
@@ -30,10 +31,20 @@ export default observer(
         defaultArguments[program.language],
         program.fileLocation,
         runConfig.arguments.map((argName) => {
-          const arg = program.arguments.find((arg) => arg.name == argName)
-            ?.config;
+          const arg = program.arguments.find((arg) => arg.name == argName);
 
-          return clsx(arg?.flag, arg?.value);
+          if (!arg) return clsx(null);
+
+          const argConfig = arg?.config;
+
+          if (arg.type === ArgumentType.ARRAY) {
+            return clsx(argConfig.flag, JSON.parse(argConfig.value).values);
+          } else if (arg.type === ArgumentType.JSON) {
+            let updatedValue = argConfig.value.replace(/(["'])/g, "\\$1");
+            return clsx(argConfig.flag, updatedValue);
+          } else {
+            return clsx(argConfig.flag, argConfig.value);
+          }
         })
       );
 
@@ -44,23 +55,49 @@ export default observer(
 
     if (!runConfig && !program.fileLocation) {
       return (
-        <div className="bg-gray-100 p-2 rounded-md">
-          You must add in the location data to generate a run configuration
-        </div>
+        <React.Fragment>
+          <h3 className="text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+            Run Configuration
+          </h3>
+          <div className="bg-gray-100 p-2 rounded-md">
+            <p className="py-2 mx-2">
+              You must add in the location data to generate a run configuration
+            </p>
+          </div>
+        </React.Fragment>
       );
     }
 
     if (!runConfig) {
       return (
-        <div className="bg-gray-100 p-2 rounded-md">
-          <button
-            className="py-2 px-3 bg-green-200 text-green-800 rounded-md text-sm"
-            onClick={program.generateRunConfig}
-            disabled={!program.fileLocation}
-          >
-            Generate Default
-          </button>
-        </div>
+        <React.Fragment>
+          <h3 className="text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+            Run Configuration
+          </h3>
+          <div className="bg-gray-100 p-2 rounded-md flex items-center space-x-2">
+            <button
+              className="py-2 px-2 bg-green-200 text-green-800 rounded-md text-sm"
+              onClick={program.generateRunConfig}
+              disabled={!program.fileLocation}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </button>
+            <p>Generate Default Config</p>
+          </div>
+        </React.Fragment>
       );
     }
 
