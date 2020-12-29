@@ -230,7 +230,7 @@ export default observer(() => {
             </svg>
           </button>
         </div>
-        <pre className="w-full bg-gray-100 p-2 pb-4 rounded-md text-gray-800 text-sm overflow-x-scroll">
+        <pre className="w-full bg-gray-100 p-2 py-4 rounded-md text-gray-800 text-sm overflow-x-scroll">
           {program.runConfig!.command}
         </pre>
       </div>

@@ -176,7 +176,7 @@ export default observer(
 
             <div>
               <h3>Command Preview</h3>
-              <pre className="w-full bg-gray-200 p-2 pb-3 rounded-md text-gray-800 text-sm overflow-x-scroll">
+              <pre className="w-full bg-gray-200 p-2 py-3 rounded-md text-gray-800 text-sm overflow-x-scroll">
                 {runConfig.command ? runConfig.command : generateFullCommand()}
               </pre>
             </div>
