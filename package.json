@@ -28,7 +28,7 @@
     "mobx-state-tree": "^3.17.2",
     "node-fetch": "^2.6.1",
     "open": "^7.3.0",
-    "postcss": "^8.0.9",
+    "postcss": "^7",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
@@ -38,17 +38,25 @@
     "react-sage": "^0.1.3",
     "react-virtualized": "^9.22.2",
     "source-map-support": "^0.5.19",
-    "tailwindcss": "^1.9.5"
+    "swipeable-react": "1.2.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.4",
+    "@flmnh-mgcl/ui": "^1.0.19",
+    "@flmnh-mgcl/ui-tailwind-config": "^1.0.1",
+    "@tailwindcss/aspect-ratio": "^0.2.0",
+    "@tailwindcss/forms": "^0.2.1",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@tailwindcss/typography": "^0.4.0",
+    "@tailwindcss/ui": "^0.7.2",
     "@types/node": "^14.0.27",
     "@types/react": "^16.9.38",
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-dom": "^16.9.8",
     "@types/react-outside-click-handler": "^1.3.0",
     "@types/react-virtualized": "^9.21.10",
-    "autoprefixer": "^9.8.0",
+    "autoprefixer": "^9",
     "electron": "^9.2.0",
     "electron-builder": "^22.8.0",
     "electron-rebuild": "^1.11.0",
@@ -56,11 +64,11 @@
     "electron-webpack": "^2.8.2",
     "electron-webpack-ts": "^4.0.1",
     "node-forge": "^0.10.0",
-    "style-loader": "^1.2.1",
-    "typescript": "^3.9.7",
-    "webpack": "^4.44.1",
     "postcss-loader": "^3.0.0",
-    "@tailwindcss/ui": "^0.6.2"
+    "style-loader": "^1.2.1",
+    "tailwind-caret-color": "^1.1.0",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1"
   },
   "electronWebpack": {
     "renderer": {
