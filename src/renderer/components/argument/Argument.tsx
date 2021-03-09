@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
-import { Argument, ArgumentType } from "../../models/Argument";
-import ArgumentConfig from "./ArgumentConfig";
-import Dropdown from "../ui/Dropdown";
+import React, { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Instance } from 'mobx-state-tree';
+import { Argument, ArgumentType } from '../../models/Argument';
+import ArgumentConfig from './ArgumentConfig';
+import Dropdown from '../ui/Dropdown';
 
 type Props = {
   argument: Instance<typeof Argument>;
@@ -20,12 +20,12 @@ export default observer(({ argument }: Props) => {
     <React.Fragment>
       <div className="flex justify-between mr-4 w-full">
         <div>
-          <label className="block text-sm leading-5 font-medium text-gray-700">
+          <label className="block text-sm leading-5 font-medium text-gray-700 dark:text-dark-200 ">
             Argument Name
           </label>
 
           <input
-            className="mt-1 rounded-md border border-gray-300 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
+            className="mt-1 rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => {
@@ -34,7 +34,7 @@ export default observer(({ argument }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm leading-5 font-medium text-gray-700">
+          <label className="block text-sm leading-5 font-medium text-gray-700 dark:text-dark-200">
             Argument Type
           </label>
 
@@ -42,12 +42,12 @@ export default observer(({ argument }: Props) => {
             className="mt-1"
             placeholder="Types"
             options={[
-              { text: "FILE", value: ArgumentType.FILE },
-              { text: "DIR", value: ArgumentType.DIR },
-              { text: "VAR", value: ArgumentType.VAR },
-              { text: "FLAG", value: ArgumentType.FLAG },
-              { text: "ARRAY", value: ArgumentType.ARRAY },
-              { text: "JSON", value: ArgumentType.JSON },
+              { text: 'FILE', value: ArgumentType.FILE },
+              { text: 'DIR', value: ArgumentType.DIR },
+              { text: 'VAR', value: ArgumentType.VAR },
+              { text: 'FLAG', value: ArgumentType.FLAG },
+              { text: 'ARRAY', value: ArgumentType.ARRAY },
+              { text: 'JSON', value: ArgumentType.JSON },
             ]}
             selected={argument.type}
             onSelect={argument.changeType}

@@ -1,15 +1,15 @@
-import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
-import React from "react";
-import { Program } from "../../models/Programs";
+import { observer } from 'mobx-react-lite';
+import { Instance } from 'mobx-state-tree';
+import React from 'react';
+import { Program } from '../../models/Programs';
 import {
   DragDropContext,
   Droppable,
   Draggable,
   DroppableProvided,
-} from "react-beautiful-dnd";
-import { Argument } from "../../models/Argument";
-import ArgumentComponent from "./Argument";
+} from 'react-beautiful-dnd';
+import { Argument } from '../../models/Argument';
+import ArgumentComponent from './Argument';
 
 type DroppableProps = {
   args: Instance<typeof Argument>[];
@@ -32,7 +32,7 @@ const DroppableList = observer(
                 {...provided.dragHandleProps}
               >
                 <div
-                  className="bg-gray-100 p-2 rounded-md"
+                  className="bg-gray-100 dark:bg-dark-700 p-2 rounded-md"
                   key={`${argument.name}-${index}`}
                 >
                   <div className="py-2 mx-2 flex flex-col space-y-4">
@@ -66,11 +66,11 @@ type ArugmentsProps = {
 export default observer(({ program }: ArugmentsProps) => {
   return (
     <React.Fragment>
-      <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+      <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 dark:text-dark-200 flex-1 pt-4 pb-2">
         Program Arguments
         <span className="absolute right-0 mr-6">
           <button
-            className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
+            className="rounded-full border-2 dark:bg-dark-700 border-indigo-600 dark:hover:bg-indigo-600 dark:text-dark-200 dark:hover:text-white bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
             onClick={program.createArgument}
           >
             <svg
@@ -112,7 +112,7 @@ export default observer(({ program }: ArugmentsProps) => {
 
       {!program.arguments ||
         (program.arguments.length < 1 && (
-          <div className="bg-gray-100 p-2 rounded-md">
+          <div className="bg-gray-100 p-2 dark:bg-dark-700 rounded-md">
             No arguments configured
           </div>
         ))}

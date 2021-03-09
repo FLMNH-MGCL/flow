@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Instance } from 'mobx-state-tree';
 import {
   FlagArgumentConfig,
   ArgumentType,
@@ -10,9 +10,9 @@ import {
   VarArgumentConfig,
   ArrayArgumentConfig,
   JsonArgumentConfig,
-} from "../../models/Argument";
-import ReactJson from "react-json-view";
-import { useFilePicker } from "react-sage";
+} from '../../models/Argument';
+import ReactJson from 'react-json-view';
+import { useFilePicker } from 'react-sage';
 
 /**
  * The observers below return handle the config UI for the various Argument types.
@@ -34,11 +34,11 @@ const FileConfig = observer(
     return (
       <React.Fragment>
         <div className="flex flex-col space-y-4">
-          <label className="block text-sm font-medium leading-5 text-gray-700">
+          <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
             Flag Value
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
-                className="form-input block w-full sm:text-sm sm:leading-5"
+                className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
                 placeholder="--flag"
                 value={config.flag}
                 onChange={(e) => config.changeFlag(e.target.value)}
@@ -46,11 +46,11 @@ const FileConfig = observer(
             </div>
           </label>
 
-          <label className="block text-sm font-medium leading-5 text-gray-700">
+          <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
             Argument Value
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
-                className="form-input rounded-md block w-full pl-4 pr-12 sm:text-sm sm:leading-5"
+                className="rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 rounded-md block w-full pl-4 pr-12 sm:text-sm sm:leading-5"
                 placeholder="Enter the path to the file"
                 value={config.value}
                 onChange={(e) => config.changeValue(e.target.value)}
@@ -59,7 +59,7 @@ const FileConfig = observer(
                 <svg
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="folder-open w-4 h-4 mr-4 text-gray-700 cursor-pointer"
+                  className="folder-open w-4 h-4 mr-4 text-gray-700 dark:text-dark-200 cursor-pointer"
                   onClick={onClick}
                 >
                   <path
@@ -84,11 +84,11 @@ const DirConfig = observer(
     // console.log(config);
     return (
       <div className="flex flex-col space-y-4">
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Flag Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="--flag"
               value={config.flag}
               onChange={(e) => config.changeFlag(e.target.value)}
@@ -96,11 +96,11 @@ const DirConfig = observer(
           </div>
         </label>
 
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Argument Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="value"
               value={config.value}
               onChange={(e) => config.changeValue(e.target.value)}
@@ -117,11 +117,11 @@ const VarConfig = observer(
     // console.log(config);
     return (
       <div className="flex flex-col space-y-4">
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Flag Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="--flag"
               value={config.flag}
               onChange={(e) => config.changeFlag(e.target.value)}
@@ -129,11 +129,11 @@ const VarConfig = observer(
           </div>
         </label>
 
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Argument Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="value"
               value={config.value}
               onChange={(e) => config.changeValue(e.target.value)}
@@ -148,11 +148,11 @@ const VarConfig = observer(
 const FlagConfig = observer(
   ({ config }: { config: Instance<typeof FlagArgumentConfig> }) => {
     return (
-      <label className="block text-sm font-medium leading-5 text-gray-700">
+      <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
         Flag Value
         <div className="mt-1 relative rounded-md shadow-sm">
           <input
-            className="form-input block w-full sm:text-sm sm:leading-5"
+            className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
             placeholder="--flag"
             value={config.flag}
             onChange={(e) => config.changeFlag(e.target.value)}
@@ -174,8 +174,8 @@ const ArrayConfig = observer(
         existing_src,
       } = edit;
 
-      if (name !== "values") {
-        setValidationMessage("cannot add fields");
+      if (name !== 'values') {
+        setValidationMessage('cannot add fields');
         return false;
       }
 
@@ -209,7 +209,7 @@ const ArrayConfig = observer(
         name, //new var name
       } = edit;
 
-      if (name === "values") {
+      if (name === 'values') {
         setValidationMessage("you cannot remove 'values'");
         return false;
       }
@@ -221,11 +221,11 @@ const ArrayConfig = observer(
 
     return (
       <div className="flex flex-col space-y-4">
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Flag Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="--flag"
               value={config.flag}
               onChange={(e) => config.changeFlag(e.target.value)}
@@ -233,7 +233,7 @@ const ArrayConfig = observer(
           </div>
         </label>
 
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Argument Values
         </label>
 
@@ -258,11 +258,11 @@ const JsonConfig = observer(
 
     return (
       <div className="flex flex-col space-y-4">
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Flag Value
           <div className="mt-1 relative rounded-md shadow-sm">
             <input
-              className="form-input block w-full sm:text-sm sm:leading-5"
+              className="w-full rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
               placeholder="--flag"
               value={config.flag}
               onChange={(e) => config.changeFlag(e.target.value)}
@@ -270,7 +270,7 @@ const JsonConfig = observer(
           </div>
         </label>
 
-        <label className="block text-sm font-medium leading-5 text-gray-700">
+        <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
           Argument Value
         </label>
 

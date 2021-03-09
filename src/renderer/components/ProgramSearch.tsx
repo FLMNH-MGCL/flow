@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 // type SearchProps = {
 //   filter: string;
@@ -12,7 +12,7 @@ export default function ProgramSearch() {
         Search Programs
       </label>
       <div className="mt-1 relative">
-        <input className="form-input rounded-full py-2 block w-full pl-4 pr-12 sm:text-sm sm:leading-5" />
+        <input className="rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 rounded-full py-2 block w-full pl-4 pr-12 sm:text-sm sm:leading-5" />
         <div className="absolute inset-y-0 right-0 flex items-center">
           <svg
             viewBox="0 0 20 20"

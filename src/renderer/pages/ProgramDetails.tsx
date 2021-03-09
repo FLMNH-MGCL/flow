@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import Header from "../components/Header";
-import { observer } from "mobx-react-lite";
-import { useParams, useNavigate } from "react-router-dom";
-import { useFilePicker } from "react-sage";
-import { useMst } from "../models";
-import FileConfiguration from "../components/program/FileConfiguration";
-import RunConfiguration from "../components/program/RunConfiguration";
-import Arugments from "../components/argument/Arugments";
+import React, { useEffect } from 'react';
+import Header from '../components/Header';
+import { observer } from 'mobx-react-lite';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useFilePicker } from 'react-sage';
+import { useMst } from '../models';
+import FileConfiguration from '../components/program/FileConfiguration';
+import RunConfiguration from '../components/program/RunConfiguration';
+import Arugments from '../components/argument/Arugments';
 
 export default observer(() => {
   const params = useParams();
@@ -33,8 +33,8 @@ export default observer(() => {
         onEdit={program.changeName}
         action={
           <button
-            onClick={() => navigate("execute")}
-            className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-md px-2 py-1 items-center justify-center font-semibold"
+            onClick={() => navigate('execute')}
+            className="rounded-full border-2 dark:bg-dark-700 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-indigo-600 dark:text-dark-200 hover:text-white dark:hover:text-white  border-indigo-600 bg-white transition-colors focus:outline-none duration-300 flex text-md px-2 py-1 items-center justify-center font-semibold"
             title="Execute Program"
           >
             <svg

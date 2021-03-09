@@ -1,11 +1,11 @@
-import React from "react";
-import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
-import { defaultArguments, Program } from "../../models/Programs";
-import Toggle from "../ui/Toggle";
-import { languages } from "../../constants/languages";
-import clsx from "clsx";
-import { ArgumentType } from "../../models/Argument";
+import React from 'react';
+import { observer } from 'mobx-react-lite';
+import { Instance } from 'mobx-state-tree';
+import { defaultArguments, Program } from '../../models/Programs';
+import Toggle from '../ui/Toggle';
+import { languages } from '../../constants/languages';
+import clsx from 'clsx';
+import { ArgumentType } from '../../models/Argument';
 
 export default observer(
   ({ program }: { program: Instance<typeof Program> }) => {
@@ -24,7 +24,7 @@ export default observer(
     function generateFullCommand() {
       const { runConfig } = program;
 
-      if (!runConfig || !program.language) return "";
+      if (!runConfig || !program.language) return '';
 
       const command = clsx(
         runConfig.commandPrefix,
@@ -40,7 +40,7 @@ export default observer(
           if (arg.type === ArgumentType.ARRAY) {
             return clsx(argConfig.flag, JSON.parse(argConfig.value).values);
           } else if (arg.type === ArgumentType.JSON) {
-            let updatedValue = argConfig.value.replace(/(["'])/g, "\\$1");
+            let updatedValue = argConfig.value.replace(/(["'])/g, '\\$1');
             return clsx(argConfig.flag, updatedValue);
           } else {
             return clsx(argConfig.flag, argConfig.value);
@@ -56,10 +56,10 @@ export default observer(
     if (!runConfig && !program.fileLocation) {
       return (
         <React.Fragment>
-          <h3 className="text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+          <h3 className="text-center text-xl font-bold text-gray-900 dark:text-dark-200 flex-1 pt-4 pb-2">
             Run Configuration
           </h3>
-          <div className="bg-gray-100 p-2 rounded-md">
+          <div className="bg-gray-100 dark:bg-dark-700 p-2 rounded-md">
             <p className="py-2 mx-2">
               You must add in the location data to generate a run configuration
             </p>
@@ -71,10 +71,10 @@ export default observer(
     if (!runConfig) {
       return (
         <React.Fragment>
-          <h3 className="text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+          <h3 className="text-center text-xl font-bold text-gray-900 dark:text-dark-200 flex-1 pt-4 pb-2">
             Run Configuration
           </h3>
-          <div className="bg-gray-100 p-2 rounded-md flex items-center space-x-2">
+          <div className="bg-gray-100 dark:bg-dark-700 p-2 rounded-md flex items-center space-x-2">
             <button
               className="py-2 px-2 bg-green-200 text-green-800 rounded-md text-sm"
               onClick={program.generateRunConfig}
@@ -103,11 +103,11 @@ export default observer(
 
     return (
       <React.Fragment>
-        <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 flex-1 pt-4 pb-2">
+        <h3 className="flex justify-center items-center text-center text-xl font-bold text-gray-900 dark:text-dark-200 flex-1 pt-4 pb-2">
           Run Configuration
           <span className="absolute right-0 mr-6">
             <button
-              className="rounded-full border-2 border-indigo-600 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
+              className="rounded-full border-2 dark:bg-dark-700 border-indigo-600 dark:hover:bg-indigo-600 dark:text-dark-200 dark:hover:text-white bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white transition-colors focus:outline-none duration-300 flex text-lg px-3 py-1 items-center justify-center font-semibold"
               disabled={!program.fileLocation}
               onClick={generateFullCommand}
             >
@@ -129,15 +129,15 @@ export default observer(
           </span>
         </h3>
 
-        <div className="bg-gray-100 p-2 rounded-md">
+        <div className="bg-gray-100 dark:bg-dark-700 p-2 rounded-md">
           <div className="py-2 mx-2 flex flex-col space-y-4">
             {hasPrefix && (
               <div>
-                <label className="block text-sm font-medium leading-5 text-gray-700">
+                <label className="block text-sm font-medium leading-5 text-gray-700 dark:text-dark-200">
                   Command Prefix
                 </label>
                 <input
-                  className="form-input block sm:text-sm sm:leading-5"
+                  className="rounded-md border border-gray-300 dark:border-dark-500 dark:bg-dark-500 dark:text-dark-200 px-4 py-2 text-sm leading-5 focus:outline-none focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 block sm:text-sm sm:leading-5"
                   placeholder="python3"
                   value={runConfig.commandPrefix}
                   onChange={(e) =>
@@ -175,8 +175,8 @@ export default observer(
             </div>
 
             <div>
-              <h3>Command Preview</h3>
-              <pre className="w-full bg-gray-200 p-2 py-3 rounded-md text-gray-800 text-sm overflow-x-scroll">
+              <h3 className="dark:text-dark-200 pb-1">Command Preview</h3>
+              <pre className="w-full bg-gray-200 dark:bg-dark-400 p-2 py-3 rounded-md text-gray-800 dark:text-dark-200 text-sm overflow-x-scroll">
                 {runConfig.command ? runConfig.command : generateFullCommand()}
               </pre>
             </div>

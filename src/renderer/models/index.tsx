@@ -1,20 +1,22 @@
-import React, { useContext, createContext, useEffect, useState } from "react";
-import { Instance, onSnapshot, applySnapshot } from "mobx-state-tree";
-import Store from "electron-store";
-import { RootModel } from "./Root";
+import React, { useContext, createContext, useEffect, useState } from 'react';
+import { Instance, onSnapshot, applySnapshot } from 'mobx-state-tree';
+import Store from 'electron-store';
+import { RootModel } from './Root';
+import { initTheme } from '../functions/init';
 
 const store = new Store();
 
 export const rootStore = RootModel.create({
-  programs: { items: [{ name: "Test Program" }] },
+  programs: { items: [{ name: 'Test Program' }] },
+  theme: 'light',
 });
 
-const STORAGE_KEY = "MAKE ME PLZ";
+const STORAGE_KEY = 'MAKE ME PLZ';
 
 onSnapshot(rootStore, (snapshot) => {
-  console.log("Snapshot: ", snapshot);
+  console.log('Snapshot: ', snapshot);
   store.set(STORAGE_KEY, snapshot);
-  console.log("Snapshot persisted to storage.");
+  console.log('Snapshot persisted to storage.');
 });
 
 const RootStoreContext = createContext<null | Instance<typeof RootModel>>(null);
@@ -26,7 +28,8 @@ export function Provider({ children }: { children: React.ReactNode }) {
     const data = store.get(STORAGE_KEY);
     if (data) {
       // TODO: remove log eventually
-      console.log("Hydrating store from snapshot", data);
+      console.log('Hydrating store from snapshot', data);
+      initTheme((data as any)?.theme as string);
       applySnapshot(rootStore, data);
     }
 
@@ -45,7 +48,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
 export function useMst() {
   const store = useContext(RootStoreContext);
   if (store === null) {
-    throw new Error("Store cannot be null, please add a context provider");
+    throw new Error('Store cannot be null, please add a context provider');
   }
   return store;
 }

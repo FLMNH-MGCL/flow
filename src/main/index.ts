@@ -1,11 +1,13 @@
 import path from 'path';
 import url from 'url';
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
 import is from 'electron-is';
 import { menubar, Menubar } from 'menubar';
 import { autoUpdater } from 'electron-updater';
 import open from 'open';
 import { addContextmenu } from './menu';
+
+// All ipcMain listeners are defined here for neatness
 import './ipcMain';
 
 autoUpdater.checkForUpdatesAndNotify();
